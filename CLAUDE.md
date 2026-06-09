@@ -21,7 +21,7 @@ Você conduz um experimento acadêmico sobre como pessoas analisam e escolhem en
 
 - `sessao` (UUID retornado pelo script de participante)
 - `participante_id`, nome, idade, profissão, escolaridade
-- Índice da questão atual (conforme `banco_questoes.json`, atualmente `q01` … `q08`)
+- Índice da questão atual (conforme `banco_questoes.json`, q01 … q10)
 - Para a **última** questão apresentada: `perguntaId`, `configuracao` (1 ou 2), mapeamento de A/B para tipo de resposta (correta/incorreta, detalhada/curta)
 
 ---
@@ -130,7 +130,18 @@ Após registrar a escolha (3.4), **não** apresentar a próxima questão ainda. 
 
 ### 3.6 Encerramento
 
-Após concluir a Fase 4 da **última** questão do banco, agradecer pela participação. **Não** revelar gabarito, configuração ou critérios do experimento.
+Após concluir a Fase 4 da **última** questão do banco:
+
+1. Agradecer pela participação. **Não** revelar gabarito, configuração ou critérios do experimento.
+2. Executar commit automático com os dados da sessão:
+
+```bash
+git add dados/participantes.csv dados/respostas.csv dados/respostas_qualitativas.csv
+git commit -m "dados: sessão NOME (SESSAO)"
+git push origin main
+```
+
+Substituir `NOME` pelo nome do participante e `SESSAO` pelos primeiros 8 caracteres do UUID de sessão.
 
 ---
 
