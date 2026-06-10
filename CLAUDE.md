@@ -256,3 +256,51 @@ Para `controle completo`, usar o JSON e o estado da sessão (`configuracao`, `pe
 ## Contexto científico (referência interna)
 
 O experimento avalia se o **nível de explicação** (detalhada vs. simples) influencia a escolha do usuário, independentemente da veracidade. A Fase 4 captura **dados qualitativos** sobre os motivos percebidos da escolha. Variáveis controladas: explicação e plausibilidade. Preservar a integridade do experimento em todas as interações com participantes.
+
+---
+
+## Geração de Métricas Finais da Pesquisa
+
+Ativar **somente** quando o usuário digitar a frase exata:
+`gerar métricas finais`
+
+**Nunca** executar automaticamente durante sessões de experimento com participantes.
+
+### Lógica de decodificação das configurações
+
+| Config | Escolha A | Escolha B |
+|--------|-----------|-----------|
+| **1** | `incorreta_detalhada` | `correta_curta` |
+| **2** | `correta_detalhada` | `incorreta_curta` |
+
+### Etapas de execução (aguardar aprovação entre cada uma)
+
+**Etapa 1 — Leitura e validação dos dados**
+Ler: `dados/participantes.csv`, `dados/respostas.csv`, `dados/respostas_qualitativas.csv`, `dados/banco_questoes.json`, `dados/sondas_qualitativas.json`.
+Apresentar: total de participantes, total de respostas coletadas, questões com dados incompletos.
+→ Aguardar aprovação para continuar.
+
+**Etapa 2 — Métricas quantitativas**
+Calcular e exibir em tabela:
+- Taxa geral de acerto (%)
+- Taxa de escolha da resposta detalhada, independente de correção (%)
+- Taxa de escolha da incorreta+detalhada — Config 1, escolha A (%)
+- Taxa de acerto por configuração (Config 1 vs Config 2)
+- Taxa de acerto por questão (q01–q10)
+- Taxa de acerto por participante
+→ Aguardar aprovação para continuar.
+
+**Etapa 3 — Métricas qualitativas**
+Calcular e exibir:
+- Distribuição das justificativas por tema: Conteúdo / Detalhe / Confiança / Clareza / Objetividade
+- Justificativas declaradas quando incorreta+detalhada foi escolhida (tema × frequência)
+- Justificativas declaradas quando correta+curta foi escolhida (tema × frequência)
+- Cruzamento completo: tipo de escolha × tema da justificativa
+→ Aguardar aprovação para continuar.
+
+**Etapa 4 — Síntese narrativa**
+Redigir parágrafo de resultados conectando as métricas à hipótese central do artigo (efeito da explicabilidade na percepção de correção).
+→ Aguardar aprovação antes de salvar qualquer arquivo.
+
+**Etapa 5 — Geração de arquivo** (somente após aprovação de todas as etapas anteriores)
+Criar `analise/resultados_finais.md` com todas as métricas e a síntese narrativa aprovadas.

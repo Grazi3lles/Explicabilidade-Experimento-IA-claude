@@ -1,0 +1,95 @@
+---
+description: Geração de métricas finais da pesquisa de explicabilidade — ativar somente ao final da coleta de dados, mediante comando explícito
+globs:
+alwaysApply: false
+---
+
+# Geração de Métricas Finais da Pesquisa
+
+Ativar **somente** quando o usuário digitar a frase exata:
+`gerar métricas finais`
+
+**Nunca** executar automaticamente. Esta rule não se aplica a sessões de experimento com participantes.
+
+## Lógica de decodificação das configurações
+
+| Config | Escolha A | Escolha B |
+|--------|-----------|-----------|
+| **1** | `incorreta_detalhada` | `correta_curta` |
+| **2** | `correta_detalhada` | `incorreta_curta` |
+
+Aplicar esta lógica a cada linha de `dados/respostas.csv` para determinar se a escolha foi correta/incorreta e detalhada/curta.
+
+## Etapas de execução
+
+Executar em ordem. **Parar e aguardar aprovação explícita do usuário entre cada etapa.** Nunca avançar automaticamente.
+
+### Etapa 1 — Leitura e validação dos dados
+
+Ler os arquivos:
+- `dados/participantes.csv`
+- `dados/respostas.csv`
+- `dados/respostas_qualitativas.csv`
+- `dados/banco_questoes.json`
+- `dados/sondas_qualitativas.json`
+
+Apresentar resumo: total de participantes, total de respostas, questões com dados incompletos ou participantes que não finalizaram.
+
+→ Aguardar aprovação para continuar.
+
+### Etapa 2 — Métricas quantitativas
+
+Calcular e exibir em tabela formatada:
+
+1. **Taxa geral de acerto** — respostas corretas / total de respostas (%)
+2. **Taxa de preferência pela resposta detalhada** — escolhas detalhadas / total (%)
+3. **Taxa de escolha incorreta+detalhada** — Config 1 com escolha A / total Config 1 (%)
+4. **Taxa de acerto por configuração**:
+   - Config 1: acertos (escolha B) / total Config 1
+   - Config 2: acertos (escolha A) / total Config 2
+5. **Taxa de acerto por questão** — q01 a q10
+6. **Taxa de acerto por participante**
+
+→ Aguardar aprovação para continuar.
+
+### Etapa 3 — Métricas qualitativas
+
+Agrupar `respostaQualitativa` de `dados/respostas_qualitativas.csv` nos seguintes temas:
+
+| Tema | Exemplos de texto |
+|------|-------------------|
+| Conteúdo | "pareceu correto", "pareceu preciso", "pareceu verdadeiro", "datas e fatos pareceram" |
+| Detalhe | "mais detalhes", "nível de detalhe", "mais completa", "mais aprofundada" |
+| Confiança | "transmitiu confiança", "transmitiu credibilidade", "parecia mais confiável" |
+| Clareza | "mais fácil de entender", "mais fácil de absorver", "mais clara", "bem estruturada" |
+| Objetividade | "mais direta", "mais objetiva", "mais concisa", "sem informações desnecessárias" |
+
+Calcular e exibir:
+- Distribuição geral por tema (%)
+- Justificativas quando **incorreta+detalhada** foi escolhida (tema × frequência)
+- Justificativas quando **correta+curta** foi escolhida (tema × frequência)
+- Tabela cruzada completa: tipo de escolha × tema da justificativa
+
+→ Aguardar aprovação para continuar.
+
+### Etapa 4 — Síntese narrativa
+
+Redigir um parágrafo de resultados conectando as métricas calculadas à hipótese central da pesquisa:
+
+> O experimento avalia se o nível de explicação (detalhada vs. simples) influencia a escolha do usuário independentemente da veracidade.
+
+A síntese deve mencionar explicitamente:
+- A taxa de escolha da incorreta+detalhada como evidência do efeito da explicabilidade
+- A diferença de acerto entre Config 1 e Config 2
+- Os temas de justificativa mais frequentes quando a resposta errada foi escolhida
+
+→ Aguardar aprovação antes de salvar qualquer arquivo.
+
+### Etapa 5 — Geração de arquivo (somente após aprovação total)
+
+Criar o arquivo `analise/resultados_finais.md` contendo:
+- Todas as tabelas de métricas das Etapas 2 e 3
+- A síntese narrativa da Etapa 4
+- Data de geração
+
+Não criar nem sobrescrever nenhum arquivo antes desta etapa e sem aprovação explícita.
