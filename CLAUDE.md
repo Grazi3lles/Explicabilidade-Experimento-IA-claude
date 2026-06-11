@@ -70,6 +70,12 @@ Capturar `id=` e `sessao=` da saída.
 **Fallback** se o terminal falhar: acrescentar uma linha em `dados/participantes.csv` com cabeçalho  
 `id,sessao,nome,idade,profissao,escolaridade,dataHora` (gerar UUIDs para `id` e `sessao`, `dataHora` em ISO).
 
+**Após registrar o participante**, acrescentar uma linha em `dados/respostas_qualitativas_livres.csv` com o nome do participante e a coluna `resposta_qualitativa_livre` vazia:
+
+```
+NOME,
+```
+
 ### 2.2 Texto obrigatório (reproduzir na íntegra)
 
 Após o cadastro, enviar **exatamente**:
@@ -291,11 +297,36 @@ Calcular e exibir em tabela:
 → Aguardar aprovação para continuar.
 
 **Etapa 3 — Métricas qualitativas**
+
+Usar **dois arquivos** em conjunto:
+- `dados/respostas_qualitativas.csv` → justificativas momento a momento (sonda por questão)
+- `dados/respostas_qualitativas_livres.csv` → reflexão livre pós-experimento por participante
+
+**3a — Sondas (momento a momento)**
+Agrupar `respostaQualitativa` nos temas: Conteúdo / Detalhe / Confiança / Clareza / Objetividade.
 Calcular e exibir:
-- Distribuição das justificativas por tema: Conteúdo / Detalhe / Confiança / Clareza / Objetividade
-- Justificativas declaradas quando incorreta+detalhada foi escolhida (tema × frequência)
-- Justificativas declaradas quando correta+curta foi escolhida (tema × frequência)
+- Distribuição geral por tema (%)
+- Justificativas quando incorreta+detalhada foi escolhida (tema × frequência)
+- Justificativas quando correta+curta foi escolhida (tema × frequência)
 - Cruzamento completo: tipo de escolha × tema da justificativa
+
+**3b — Respostas livres (reflexão pós-experimento)**
+Categorizar cada resposta livre preenchida em um dos padrões:
+- **Confiança condicional** — detalhe convence apenas quando o participante não domina o conteúdo
+- **Viés puro pelo detalhe** — preferência pelo detalhe independente do conteúdo
+- **Calibração ao longo do experimento** — participante relata mudança de estratégia durante o experimento
+- **Conteúdo como filtro** — participante relata focar no conteúdo, não no tamanho
+Sinalizar participantes com resposta livre em branco como dados ausentes.
+
+**3c — Validação cruzada: declaração vs. comportamento real**
+Para cada participante com resposta livre preenchida, comparar:
+- O padrão declarado na resposta livre
+- A taxa real de escolha da resposta detalhada (calculada na Etapa 2)
+Identificar e destacar **dissonâncias** (ex.: participante diz que não escolhia pelo tamanho, mas dados mostram >70% de preferência pelo detalhado).
+
+**3d — Triangulação sonda × resposta livre**
+Para participantes com ambos os dados disponíveis, verificar se o tema dominante nas sondas momento a momento é coerente com o padrão declarado na resposta livre. Apontar convergências e contradições.
+
 → Aguardar aprovação para continuar.
 
 **Etapa 4 — Síntese narrativa**
